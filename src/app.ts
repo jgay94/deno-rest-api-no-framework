@@ -8,6 +8,9 @@ const server = http.serve({ port: PORT, hostname: HOSTNAME })
 console.log(`Server now running at http://${HOSTNAME}:${PORT}`)
 
 for await (const req of server) {
-    req.respond({ body: "Hello world", status: 200 })
-    console.log(req)
+    const params = new URLSearchParams(req.url.substr(1))
+    const name = params.get("name")
+
+    req.respond({ body: `Hello ${name ?? "world"}`, status: 200 })
+    console.log(`${req.method} ${req.url}`)
 }
