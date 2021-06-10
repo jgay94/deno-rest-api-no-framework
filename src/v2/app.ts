@@ -1,6 +1,6 @@
 import { listenAndServe } from "https://deno.land/std/http/server.ts";
 
-listenAndServe({ port: 8080 }, (req) => {
+listenAndServe({ port: 8080 }, async (req) => {
   /**
    * 1. parse pathname
    */
@@ -24,6 +24,10 @@ listenAndServe({ port: 8080 }, (req) => {
   /**
    * 4. parse body
    */
+  const buffer = await Deno.readAll(req.body);
+  const decoder = new TextDecoder();
+  const body = decoder.decode(buffer);
+  console.log(`body: ${body}`);
 
   req.respond({
     body: "Hello from the server",
