@@ -1,4 +1,5 @@
 import { listenAndServe } from "https://deno.land/std/http/server.ts";
+import router, { notFound } from "./routes/router.ts";
 
 listenAndServe({ port: 8080 }, async (req) => {
   /**
@@ -29,9 +30,15 @@ listenAndServe({ port: 8080 }, async (req) => {
   const body = decoder.decode(buffer);
   console.log(`body: ${body}`);
 
-  req.respond({
-    body: "Hello from the server",
-  });
+  /**
+   * 5. route request
+   */
+  const data = { body: JSON.parse(body), params };
+  const routeHandler = router[pathname] && router[pathname][method]
+    ? router[pathname][method]
+    : notFound;
+
+  routeHandler(req, data);
 });
 
 console.log(`Server is running at port 8080`);
